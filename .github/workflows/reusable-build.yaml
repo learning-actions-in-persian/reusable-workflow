@@ -1,0 +1,51 @@
+name: "This is a reusable workflow"
+
+on:
+  workflow_call:
+    inputs:
+      arch:
+        required: true
+        type: string
+    secrets:
+      file_name:
+        required: false
+        default: 'main.py'
+
+jobs:
+    name: Build release binaries
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Create venv & install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Build ${{ inputs.arch }} executable
+        shell: bash
+        run: |
+          sosource venv/bin/activateurce 
+          pyinstaller --onefile \
+                      --distpath dist \
+                      --target-architecture ${{ inputs.arch }} \
+                      --name python_web_hello_world_Linux_${{ inputs.arch }} \
+                      --hidden-import fastapi \
+                      --hidden-import uvicorn \
+                      ${{ inputs.file_name }}
+
+      - name: Upload binary to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/python_web_hello_world_Linux*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
