@@ -8,9 +8,11 @@ on:
         type: string
       file_name:
         required: false
+        type: string
         default: 'main.py'
 
 jobs:
+  build_with_pyinstaller:
     name: Build release binaries
     if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
