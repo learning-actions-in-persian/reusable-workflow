@@ -6,7 +6,6 @@ on:
       arch:
         required: true
         type: string
-    secrets:
       file_name:
         required: false
         default: 'main.py'
