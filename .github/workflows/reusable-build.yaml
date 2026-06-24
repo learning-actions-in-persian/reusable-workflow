@@ -35,7 +35,7 @@ jobs:
       - name: Build ${{ inputs.arch }} executable
         shell: bash
         run: |
-          sosource venv/bin/activateurce 
+          source venv/bin/activateurce 
           pyinstaller --onefile \
                       --distpath dist \
                       --target-architecture ${{ inputs.arch }} \
